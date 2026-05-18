@@ -105,15 +105,13 @@ public class TeacherSubjectsFragment extends Fragment {
         android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(requireContext());
         View dialogView = getLayoutInflater().inflate(R.layout.dialog_add_subject, null);
         builder.setView(dialogView);
+        builder.setTitle("Add New Subject");
 
         android.widget.EditText editName = dialogView.findViewById(R.id.editSubjectName);
         android.widget.EditText editCode = dialogView.findViewById(R.id.editSubjectCode);
         android.widget.EditText editCredits = dialogView.findViewById(R.id.editCreditHours);
-        android.widget.Button btnSave = dialogView.findViewById(R.id.btnSaveSubject);
 
-        android.app.AlertDialog dialog = builder.create();
-
-        btnSave.setOnClickListener(v -> {
+        builder.setPositiveButton("Save", (dialog, which) -> {
             String name = editName.getText().toString().trim();
             String code = editCode.getText().toString().trim();
             String creditsStr = editCredits.getText().toString().trim();
@@ -125,9 +123,9 @@ public class TeacherSubjectsFragment extends Fragment {
 
             int credits = Integer.parseInt(creditsStr);
             viewModel.createSubject(name, code, credits);
-            dialog.dismiss();
         });
 
-        dialog.show();
+        builder.setNegativeButton("Cancel", null);
+        builder.show();
     }
 }

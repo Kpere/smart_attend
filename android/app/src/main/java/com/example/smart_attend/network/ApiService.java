@@ -47,4 +47,10 @@ public interface ApiService {
 
     @POST("api/student/enroll")
     Call<JsonObject> enrollSubject(@Header("Authorization") String token, @Body JsonObject body);
+
+    @POST("api/teacher/sessions/start")
+    Call<JsonObject> startSession(@Header("Authorization") String token, @Body JsonObject body);
+
+    @POST("api/student/sessions/join")
+    Call<JsonObject> joinSession(@Header("Authorization") String token, @Body JsonObject body);
 }

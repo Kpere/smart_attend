@@ -2,7 +2,8 @@ from flask import Blueprint, request, jsonify
 from functools import wraps
 import jwt
 from flask import current_app
-from models import db, User, Subject, Enrollment
+from models import db, User, Subject, Enrollment, Session, Attendance
+from datetime import datetime
 
 student_bp = Blueprint('student', __name__)
 
@@ -93,3 +94,50 @@ def enroll_in_subject(current_user):
     db.session.commit()
 
     return jsonify({'message': 'Enrolled successfully'}), 200
+
+@student_bp.route('/sessions/join', methods=['POST'])
+@student_required
+def join_session(current_user):
+    data = request.get_json()
+    subject_id = data.get('subject_id')
+    code = data.get('code')
+
+    if not subject_id or not code:
+        return jsonify({'error': 'subject_id and code are required'}), 400
+
+    # Ensure student is actually enrolled
+    enrollment = Enrollment.query.filter_by(student_id=current_user.id, subject_id=subject_id).first()
+    if not enrollment:
+        return jsonify({'error': 'You are not enrolled in this subject'}), 403
+
+    # Find the active session
+    session = Session.query.filter_by(subject_id=subject_id, status='active').first()
+    if not session:
+        return jsonify({'error': 'No active session for this subject'}), 404
+
+    # Check expiry
+    if datetime.utcnow() > session.expires_at:
+        session.status = 'closed'
+        db.session.commit()
+        return jsonify({'error': 'The session has expired'}), 400
+
+    # Check code match (case-insensitive)
+    if session.code.upper() != code.upper():
+        return jsonify({'error': 'Invalid attendance code'}), 400
+
+    # Check if already marked present
+    existing_attendance = Attendance.query.filter_by(session_id=session.id, student_id=current_user.id).first()
+    if existing_attendance:
+        return jsonify({'error': 'You have already been marked present for this session'}), 400
+
+    # Mark present
+    attendance = Attendance(
+        session_id=session.id,
+        student_id=current_user.id,
+        status='present',
+        marked_at=datetime.utcnow()
+    )
+    db.session.add(attendance)
+    db.session.commit()
+
+    return jsonify({'message': 'Successfully marked present!'}), 200

@@ -33,6 +33,17 @@ public class EnrolledStudentAdapter extends RecyclerView.Adapter<EnrolledStudent
         holder.textStudentName.setText(student.getStudentName());
         holder.textStudentEmail.setText(student.getStudentEmail());
         holder.textSubjectTag.setText(student.getSubjectName());
+        
+        int percent = student.getAttendancePercentage();
+        holder.textAttendancePercentage.setText(percent + "% Attended");
+        
+        if (percent >= 75) {
+            holder.textAttendancePercentage.setTextColor(android.graphics.Color.parseColor("#4CAF50")); // Green
+        } else if (percent >= 50) {
+            holder.textAttendancePercentage.setTextColor(android.graphics.Color.parseColor("#FF9800")); // Orange
+        } else {
+            holder.textAttendancePercentage.setTextColor(android.graphics.Color.parseColor("#F44336")); // Red
+        }
     }
 
     @Override
@@ -41,13 +52,14 @@ public class EnrolledStudentAdapter extends RecyclerView.Adapter<EnrolledStudent
     }
 
     static class StudentViewHolder extends RecyclerView.ViewHolder {
-        TextView textStudentName, textStudentEmail, textSubjectTag;
+        TextView textStudentName, textStudentEmail, textSubjectTag, textAttendancePercentage;
 
         public StudentViewHolder(@NonNull View itemView) {
             super(itemView);
             textStudentName = itemView.findViewById(R.id.textStudentName);
             textStudentEmail = itemView.findViewById(R.id.textStudentEmail);
             textSubjectTag = itemView.findViewById(R.id.textSubjectTag);
+            textAttendancePercentage = itemView.findViewById(R.id.textAttendancePercentage);
         }
     }
 }
