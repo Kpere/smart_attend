@@ -18,6 +18,7 @@ public class TeacherViewModel extends ViewModel {
     private final MutableLiveData<Boolean> isLoading = new MutableLiveData<>();
     private final MutableLiveData<Boolean> subjectCreated = new MutableLiveData<>();
     private final MutableLiveData<Boolean> subjectDeleted = new MutableLiveData<>();
+    private final MutableLiveData<Boolean> subjectClaimed = new MutableLiveData<>();
 
     private String authToken;
 
@@ -30,6 +31,7 @@ public class TeacherViewModel extends ViewModel {
     public LiveData<Boolean> getIsLoading() { return isLoading; }
     public LiveData<Boolean> getSubjectCreated() { return subjectCreated; }
     public LiveData<Boolean> getSubjectDeleted() { return subjectDeleted; }
+    public LiveData<Boolean> getSubjectClaimed() { return subjectClaimed; }
 
     public void fetchSubjects() {
         if (authToken == null) return;
@@ -102,6 +104,30 @@ public class TeacherViewModel extends ViewModel {
 
                     @Override
                     public void onFailure(Call<JsonObject> call, Throwable t) {
+                        errorMessage.setValue("Network error: " + t.getMessage());
+                    }
+                });
+    }
+
+    public void claimSubject(int subjectId) {
+        if (authToken == null) return;
+        isLoading.setValue(true);
+        RetrofitClient.getApiService().claimSubject("Bearer " + authToken, subjectId)
+                .enqueue(new Callback<JsonObject>() {
+                    @Override
+                    public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                        isLoading.setValue(false);
+                        if (response.isSuccessful()) {
+                            subjectClaimed.setValue(true);
+                            fetchSubjects(); // Refresh list
+                        } else {
+                            errorMessage.setValue("Failed to claim subject. It might already be taken.");
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<JsonObject> call, Throwable t) {
+                        isLoading.setValue(false);
                         errorMessage.setValue("Network error: " + t.getMessage());
                     }
                 });

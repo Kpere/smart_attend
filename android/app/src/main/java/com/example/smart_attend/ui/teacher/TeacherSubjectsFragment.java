@@ -23,6 +23,7 @@ public class TeacherSubjectsFragment extends Fragment {
     private RecyclerView rvSubjects;
     private ProgressBar progressBar;
     private TextView textEmpty;
+    private com.google.android.material.floatingactionbutton.FloatingActionButton fabAddSubject;
     private SubjectAdapter adapter;
     private TeacherViewModel viewModel;
 
@@ -39,6 +40,9 @@ public class TeacherSubjectsFragment extends Fragment {
         rvSubjects   = view.findViewById(R.id.rvSubjects);
         progressBar  = view.findViewById(R.id.progressBar);
         textEmpty    = view.findViewById(R.id.textEmpty);
+        fabAddSubject = view.findViewById(R.id.fabAddSubject);
+
+        fabAddSubject.setOnClickListener(v -> showAddSubjectDialog());
 
         SessionManager sessionManager = new SessionManager(requireContext());
 
@@ -54,9 +58,16 @@ public class TeacherSubjectsFragment extends Fragment {
     }
 
     private void setupRecyclerView() {
-        // Pass false (teacher view), no delete listener → cards are read-only
-        adapter = new SubjectAdapter(false, null);
-        // No setDeleteListener() call → delete button stays hidden
+        adapter = new SubjectAdapter(false, subject -> {
+            // Take Course action
+            viewModel.claimSubject(subject.getId());
+        });
+        
+        adapter.setDeleteListener(subject -> {
+            // Remove Course action
+            viewModel.deleteSubject(subject.getId());
+        });
+        
         rvSubjects.setLayoutManager(new LinearLayoutManager(requireContext()));
         rvSubjects.setAdapter(adapter);
     }
@@ -82,5 +93,41 @@ public class TeacherSubjectsFragment extends Fragment {
                 Toast.makeText(requireContext(), msg, Toast.LENGTH_SHORT).show();
             }
         });
+        
+        viewModel.getSubjectClaimed().observe(getViewLifecycleOwner(), claimed -> {
+            if (claimed != null && claimed) {
+                Toast.makeText(requireContext(), "Course successfully claimed!", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void showAddSubjectDialog() {
+        android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(requireContext());
+        View dialogView = getLayoutInflater().inflate(R.layout.dialog_add_subject, null);
+        builder.setView(dialogView);
+
+        android.widget.EditText editName = dialogView.findViewById(R.id.editSubjectName);
+        android.widget.EditText editCode = dialogView.findViewById(R.id.editSubjectCode);
+        android.widget.EditText editCredits = dialogView.findViewById(R.id.editCreditHours);
+        android.widget.Button btnSave = dialogView.findViewById(R.id.btnSaveSubject);
+
+        android.app.AlertDialog dialog = builder.create();
+
+        btnSave.setOnClickListener(v -> {
+            String name = editName.getText().toString().trim();
+            String code = editCode.getText().toString().trim();
+            String creditsStr = editCredits.getText().toString().trim();
+
+            if (name.isEmpty() || code.isEmpty() || creditsStr.isEmpty()) {
+                Toast.makeText(requireContext(), "Please fill all fields", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            int credits = Integer.parseInt(creditsStr);
+            viewModel.createSubject(name, code, credits);
+            dialog.dismiss();
+        });
+
+        dialog.show();
     }
 }

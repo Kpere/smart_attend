@@ -73,16 +73,31 @@ public class SubjectAdapter extends RecyclerView.Adapter<SubjectAdapter.SubjectV
                 });
             }
         } else {
-            // Teacher view — show teacher name, no action buttons
+            // Teacher view — show claim/remove actions based on ownership
             holder.textTeacherName.setVisibility(View.VISIBLE);
             holder.textTeacherName.setText("Teacher: " + subject.getTeacherName());
-            holder.btnAction.setVisibility(View.GONE);
-
-            // Only show delete button if a delete listener is explicitly set
-            if (deleteListener != null) {
+            
+            holder.btnAction.setVisibility(View.VISIBLE);
+            
+            if (subject.isMine()) {
+                // Course is owned by current teacher
+                holder.btnAction.setVisibility(View.GONE);
                 holder.btnDelete.setVisibility(View.VISIBLE);
-                holder.btnDelete.setOnClickListener(v -> deleteListener.onDeleteClick(subject));
+                holder.btnDelete.setOnClickListener(v -> {
+                    if (deleteListener != null) deleteListener.onDeleteClick(subject);
+                });
+            } else if ("Unassigned".equals(subject.getTeacherName())) {
+                // Course is available to take
+                holder.btnAction.setText("Take Course");
+                holder.btnAction.setEnabled(true);
+                holder.btnDelete.setVisibility(View.GONE);
+                holder.btnAction.setOnClickListener(v -> {
+                    if (actionListener != null) actionListener.onActionClick(subject);
+                });
             } else {
+                // Course is taken by another teacher
+                holder.btnAction.setText("Taken");
+                holder.btnAction.setEnabled(false);
                 holder.btnDelete.setVisibility(View.GONE);
             }
         }

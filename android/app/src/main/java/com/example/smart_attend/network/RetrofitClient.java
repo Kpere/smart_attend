@@ -9,7 +9,7 @@ import java.util.concurrent.TimeUnit;
 public class RetrofitClient {
     // UPDATE THIS IP to your PC's current Wi-Fi IPv4 address whenever it changes
     // Run: ipconfig (Windows) or ifconfig (Mac/Linux) to find your Wi-Fi IP
-    private static final String BASE_URL = "http://172.20.10.3:5000/";
+    private static final String BASE_URL = "https://smart-attend-6dpc.onrender.com/";
 
     private static Retrofit retrofit = null;
 

@@ -3,6 +3,20 @@ from models import db, User, Subject
 
 admin_bp = Blueprint('admin', __name__)
 
+@admin_bp.route('/stats', methods=['GET'])
+def get_dashboard_stats():
+    total_students = User.query.filter_by(role='student').count()
+    total_teachers = User.query.filter_by(role='teacher').count()
+    pending_approvals = User.query.filter_by(role='pending').count()
+    total_subjects = Subject.query.count()
+    
+    return jsonify({
+        'total_students': total_students,
+        'total_teachers': total_teachers,
+        'pending_approvals': pending_approvals,
+        'total_subjects': total_subjects
+    }), 200
+
 @admin_bp.route('/users', methods=['GET'])
 def get_users():
     users = User.query.all()

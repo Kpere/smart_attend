@@ -6,6 +6,7 @@ public class Subject {
     private String code;
     private String teacher_name;
     private boolean is_enrolled;
+    private boolean is_mine;
     private int credit_hours;
 
     public Subject() {}
@@ -24,6 +25,9 @@ public class Subject {
 
     public boolean isEnrolled() { return is_enrolled; }
     public void setEnrolled(boolean enrolled) { is_enrolled = enrolled; }
+
+    public boolean isMine() { return is_mine; }
+    public void setMine(boolean mine) { is_mine = mine; }
 
     public int getCreditHours() { return credit_hours; }
     public void setCreditHours(int credit_hours) { this.credit_hours = credit_hours; }

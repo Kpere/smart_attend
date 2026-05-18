@@ -15,6 +15,9 @@ public interface ApiService {
     @POST("api/auth/google")
     Call<JsonObject> authenticateWithGoogle(@Body JsonObject body);
 
+    @GET("api/admin/stats")
+    Call<JsonObject> getAdminStats();
+
     @GET("api/admin/users")
     Call<java.util.List<com.example.smart_attend.model.User>> getUsers();
 
@@ -26,6 +29,9 @@ public interface ApiService {
 
     @GET("api/teacher/subjects")
     Call<java.util.List<com.example.smart_attend.model.Subject>> getTeacherSubjects(@Header("Authorization") String token);
+
+    @POST("api/teacher/subjects/{id}/claim")
+    Call<JsonObject> claimSubject(@Header("Authorization") String token, @Path("id") int id);
 
     @DELETE("api/teacher/subjects/{id}")
     Call<JsonObject> deleteSubject(@Header("Authorization") String token, @Path("id") int id);

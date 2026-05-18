@@ -77,16 +77,44 @@ def get_teacher_subjects(current_user):
     result = []
     for sub in subjects:
         teacher_name = "Unassigned"
+        is_mine = False
         if sub.teacher:
             teacher_name = sub.teacher.name
+            if sub.teacher_id == current_user.id:
+                is_mine = True
         result.append({
             'id': sub.id,
             'name': sub.name,
             'code': sub.code,
             'credit_hours': sub.credit_hours,
-            'teacher_name': teacher_name
+            'teacher_name': teacher_name,
+            'is_mine': is_mine
         })
     return jsonify(result), 200
+
+@teacher_bp.route('/subjects/<int:subject_id>/claim', methods=['POST'])
+@teacher_required
+def claim_subject(current_user, subject_id):
+    subject = Subject.query.get(subject_id)
+    if not subject:
+        return jsonify({'error': 'Subject not found'}), 404
+        
+    if subject.teacher_id is not None:
+        return jsonify({'error': 'Subject is already assigned to a teacher'}), 400
+        
+    subject.teacher_id = current_user.id
+    db.session.commit()
+    
+    return jsonify({
+        'message': 'Subject claimed successfully',
+        'subject': {
+            'id': subject.id,
+            'name': subject.name,
+            'code': subject.code,
+            'credit_hours': subject.credit_hours,
+            'teacher_name': current_user.name
+        }
+    }), 200
 
 @teacher_bp.route('/subjects/<int:subject_id>', methods=['DELETE'])
 @teacher_required
@@ -95,11 +123,10 @@ def delete_subject(current_user, subject_id):
     if not subject:
         return jsonify({'error': 'Subject not found or access denied'}), 404
 
-    # Delete related enrollments first
-    Enrollment.query.filter_by(subject_id=subject_id).delete()
-    db.session.delete(subject)
+    # Instead of deleting the subject (which destroys it for the whole school), we un-claim it.
+    subject.teacher_id = None
     db.session.commit()
-    return jsonify({'message': 'Subject deleted successfully'}), 200
+    return jsonify({'message': 'Subject unclaimed successfully'}), 200
 
 @teacher_bp.route('/students', methods=['GET'])
 @teacher_required
