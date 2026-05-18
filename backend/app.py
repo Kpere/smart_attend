@@ -48,6 +48,8 @@ def seed_subjects():
         print("[seed] Subjects already exist — skipping seed.")
 
 
+# Instantiate the app globally so Gunicorn can find it easily with "gunicorn app:app"
+app = create_app()
+
 if __name__ == '__main__':
-    app = create_app()
     app.run(host='0.0.0.0', debug=True, port=5000)
