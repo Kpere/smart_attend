@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/studentOverviewFragment"
+        android:icon="@android:drawable/ic_menu_agenda"
+        android:title="Overview" />
+    <item
+        android:id="@+id/studentSubjectsFragment"
+        android:icon="@android:drawable/ic_menu_view"
+        android:title="Subjects" />
+    <item
+        android:id="@+id/studentAttendanceFragment"
+        android:icon="@android:drawable/ic_menu_recent_history"
+        android:title="Live Class" />
+</menu>

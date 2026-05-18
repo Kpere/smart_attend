@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/admin_nav_graph"
+    app:startDestination="@id/navigation_user_management">
+
+    <fragment
+        android:id="@+id/navigation_admin_overview"
+        android:name="com.example.smart_attend.ui.admin.AdminOverviewFragment"
+        android:label="Overview"
+        tools:layout="@layout/fragment_admin_overview" />
+
+    <fragment
+        android:id="@+id/navigation_user_management"
+        android:name="com.example.smart_attend.ui.admin.UserManagementFragment"
+        android:label="Users"
+        tools:layout="@layout/fragment_user_management" />
+
+    <fragment
+        android:id="@+id/navigation_course_management"
+        android:name="com.example.smart_attend.ui.admin.CourseManagementFragment"
+        android:label="Courses"
+        tools:layout="@layout/fragment_course_management" />
+
+    <fragment
+        android:id="@+id/navigation_subject_management"
+        android:name="com.example.smart_attend.ui.admin.SubjectManagementFragment"
+        android:label="Subjects"
+        tools:layout="@layout/fragment_subject_management" />
+
+</navigation>

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/teacher_nav_graph"
+    app:startDestination="@id/teacherOverviewFragment">
+
+    <fragment
+        android:id="@+id/teacherOverviewFragment"
+        android:name="com.example.smart_attend.ui.teacher.TeacherOverviewFragment"
+        android:label="Teacher Overview"
+        tools:layout="@layout/fragment_teacher_overview" />
+        
+    <fragment
+        android:id="@+id/teacherSubjectsFragment"
+        android:name="com.example.smart_attend.ui.teacher.TeacherSubjectsFragment"
+        android:label="My Subjects"
+        tools:layout="@layout/fragment_teacher_subjects" />
+        
+    <fragment
+        android:id="@+id/teacherStudentsFragment"
+        android:name="com.example.smart_attend.ui.teacher.TeacherStudentsFragment"
+        android:label="My Students"
+        tools:layout="@layout/fragment_teacher_students" />
+        
+    <fragment
+        android:id="@+id/teacherAttendanceFragment"
+        android:name="com.example.smart_attend.ui.teacher.TeacherAttendanceFragment"
+        android:label="Live Attendance"
+        tools:layout="@layout/fragment_teacher_attendance" />
+</navigation>

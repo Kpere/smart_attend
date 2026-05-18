@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/student_nav_graph"
+    app:startDestination="@id/studentOverviewFragment">
+
+    <fragment
+        android:id="@+id/studentOverviewFragment"
+        android:name="com.example.smart_attend.ui.student.StudentOverviewFragment"
+        android:label="Student Overview"
+        tools:layout="@layout/fragment_student_overview" />
+        
+    <fragment
+        android:id="@+id/studentSubjectsFragment"
+        android:name="com.example.smart_attend.ui.student.StudentSubjectsFragment"
+        android:label="Available Subjects"
+        tools:layout="@layout/fragment_student_subjects" />
+        
+    <fragment
+        android:id="@+id/studentAttendanceFragment"
+        android:name="com.example.smart_attend.ui.student.StudentAttendanceFragment"
+        android:label="Live Class"
+        tools:layout="@layout/fragment_student_attendance" />
+</navigation>
